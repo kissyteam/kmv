@@ -2,11 +2,13 @@ var kissyMods;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.src == "kissyMap") {
-        kissyMods = request.kissyMods;
+		
+		kissyMods = request.kissyMods;
+		//chrome.runtime.sendMessage({src: "back", kissyMods: request.kissyMods});
     }
-
+	
     if (request.src == "ready") {
-        sendResponse({src: "ready", "kissyMods": kissyMods});
+        chrome.runtime.sendMessage({src: "back1", "kissyMods": kissyMods});
     }
+	
 });
-

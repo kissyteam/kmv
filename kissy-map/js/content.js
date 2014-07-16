@@ -18,6 +18,7 @@
             window.addEventListener("message", function(e) {
                 if (e.data.src == "kissyMap") {
                     chrome.runtime.sendMessage({src: "kissyMap", kissyMods: e.data.kissyMods});
+					//console.log(typeof e.data.kissyMods);
                 }
             });
         },
