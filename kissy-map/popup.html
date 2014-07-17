@@ -3,17 +3,25 @@
     <head>
         <title>kissy-map</title>
         <link rel="stylesheet" href="css/d3aplus.css"/>
+		<link rel="stylesheet" href="css/popup.css"/>
         <style>
             body {
                 width: 800px;
                 height: 600px;
+				border: 1px solid red;
             }
         </style>
     </head>
     <body>
         <script src="js/lib/d3-min.js"></script>
         <script src="js/lib/d3plus.js"></script>
-
+		<div id="fundiv" class="fundiv">
+			<button type="button">Filter</button>
+			<select>
+				<option>fp</option>
+				<option>mui</option>
+			</select>
+		</div>
         <div id="viz"></div>
 
         <script src="js/main.js"></script>

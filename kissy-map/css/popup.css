@@ -1,0 +1,19 @@
+.fundiv{
+    height:30px;
+	width:100%;
+	text-align:center;
+	/*border:1px solid #ccc;*/
+}
+.fundiv select,.fundiv button {
+	height:100%;
+	border:1px solid #ccc;
+	border-radius:5px;
+	font-family:Arial;
+	font-size:16px;
+}
+.fundiv select {
+	width:150px;
+}
+.fundiv button {
+	width:80px;
+}
