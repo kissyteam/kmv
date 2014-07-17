@@ -1,5 +1,6 @@
 .fundiv{
     height:30px;
+	line-height:30px;
 	width:100%;
 	text-align:center;
 	/*border:1px solid #ccc;*/
@@ -11,9 +12,14 @@
 	font-family:Arial;
 	font-size:16px;
 }
+.fundiv input{
+	height:20px;
+	width:20px;
+}
 .fundiv select {
 	width:150px;
 }
 .fundiv button {
 	width:80px;
+	cursor:pointer;
 }

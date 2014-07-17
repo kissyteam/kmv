@@ -45,62 +45,74 @@
 	
 	//var connections=[],sample_data=[];
 	
+	var oForm=document.getElementById("filterMods");
+	var oSel=document.getElementById("sMods");
+	var oBt=document.getElementsByTagName("button")[0];
+	oBt.addEventListener("click",function(event){
+		var options=oSel.options;
+		var modIndex=oSel.selectedIndex;
+		
+		chrome.runtime.sendMessage({src: "filter", option: options[modIndex].value});
+		//exclude.push(options[modIndex].value);
+		
+		//window.location.reload();
+		//console.log(exclude);
+	},false);
+	
 	chrome.runtime.onMessage.addListener(function(request,sender,sendResponse){
 	
 		if (request.src=="back1") {
-			var kissymods=JSON.parse(request.kissyMods);
-			//console.log(request.kissyMods);
-			var connect=[]
-			,sample=[]
-			,count=0
-			,count1=0;
-			for (var name in kissymods) {
-				
-				if (kissymods[name].requires[0]&& testMods(name)) {
-					console.log(testMods(name));
-					var strsample='{"name": "'+name+'", '+'"size": '+Math.round(20*Math.random()+20)+'}';
-					sample[count1]=JSON.parse(strsample);
-					count1++;
-					for(var k=0; k<kissymods[name].requires.length; k++){
-						if(testMods(kissymods[name].requires[k])){
-						var strcon='{"source": "'+name+'", '+'"target": "'+kissymods[name].requires[k]+'"}';
-						connect[count]=JSON.parse(strcon);
-						count++;
-						}
-					}
-				
-				}
+			while(oSel.firstChild){
+				oSel.removeChild(oSel.firstChild);
 			}
 			
-			console.log(connect);
-			console.log(sample);
+			console.log(request.sample.length);
+			
+			for(var s=0;s<request.sample.length;s++){
+				var op=document.createElement("option");
+				op.value=request.sample[s].name;
+				op.innerHTML=request.sample[s].name;
+				
+				oSel.appendChild(op);
+			}
+			
 			var visualization = d3plus.viz()
 				.container("#viz")
 				.type("network")
-				.data(sample)
-				.edges(connect)
+				.data(request.sample)
+				.edges(request.connect)
 				.edges({"arrows": true})
 				.size("size")
 				.id("name")
 				.draw();
 		}
+		
+		
+		if(request.src=="back2"){
+			
+			while(oSel.firstChild){
+				oSel.removeChild(oSel.firstChild);
+			}
+			for(var s=0;s<request.sample.length;s++){
+				var op=document.createElement("option");
+				op.value=request.sample[s].name;
+				op.innerHTML=request.sample[s].name;
+				
+				oSel.appendChild(op);
+			}
+			
+			var visualization = d3plus.viz()
+				.container("#viz")
+				.type("network")
+				.data(request.sample)
+				.edges(request.connect)
+				.edges({"arrows": true})
+				.size("size")
+				.id("name")
+				.draw();
+			console.log(exclude);
+		}
 	});
 	
 })();
 
-
-function testMods(str){
-	var exclude=["dom","node","loader","anim","features","path","promise","uri","lang","base","event","io","attribute","button","color","combobox",
-	"component","cookie","date","dd","deprecated","editor","filter-menu","html-parser","import-style","menu","menubutton","meta","navigation-view",
-	"overlay","querystring","reactive","resizable","router","scroll-view","separator","split-button","stylesheet","swf","tabs","toolbar",
-	"tree","ua","url","util","xtemplate","mui"];
-	
-	for(var i=0;i<exclude.length;i++) {
-		if(str.indexOf(exclude[i]+"/")==0){
-			return false;
-		}else if(exclude.indexOf(str)!=-1){
-			return false;
-		}
-	}
-	return true;
-}
