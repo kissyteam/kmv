@@ -20,6 +20,10 @@
                     chrome.runtime.sendMessage({src: "kissyMap", kissyMods: e.data.kissyMods});
 					//console.log(typeof e.data.kissyMods);
                 }
+				
+				if(e.data.src=="kissyMap1"){
+					chrome.runtime.sendMessage({src: "kissyMap1", kissyMods: e.data.kissyMods});
+				}
             });
         },
 
@@ -27,13 +31,21 @@
             setTimeout(function() {
                 var mods = window.KISSY && window.KISSY.Env.mods,
                     res = {};
-                for (var mod in mods) {
-                    res[mod] = { requires: mods[mod].requires || [] };
-                }
-                window.postMessage({
-                    src: "kissyMap",
-                    kissyMods: JSON.stringify(res)
-                }, "*");
+				if(mods){
+					for (var mod in mods) {
+						res[mod] = { requires: mods[mod].requires || [] };
+					}
+					window.postMessage({
+						src: "kissyMap",
+						kissyMods: JSON.stringify(res)
+					}, "*");
+				}else{
+				//	console.log(mods);
+					window.postMessage({
+						src: "kissyMap1",
+						kissyMods: mods
+					}, "*");
+				}
             }, 2000);
         }
     };

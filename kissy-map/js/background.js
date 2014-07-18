@@ -1,31 +1,46 @@
-var kissyMods;
+var kissymods;
+
 var exclude=["dom","node","loader","anim","features","path","promise","uri","lang","base","event","io","attribute","button","color","combobox",
 	"component","cookie","date","dd","deprecated","editor","filter-menu","html-parser","import-style","menu","menubutton","meta","navigation-view",
 	"overlay","querystring","reactive","resizable","router","scroll-view","separator","split-button","stylesheet","swf","tabs","toolbar",
 	"tree","ua","url","util","xtemplate","mui"];
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+//	console.log(request.kissyMods.length);
     if (request.src == "kissyMap") {
-		kissyMods = request.kissyMods;
-    }
-	kissymods=JSON.parse(kissyMods);
-    if (request.src == "ready") {
-			//console.log(request.kissyMods);
-		var end=toJson(kissymods,exclude);
-		console.log(end.sample);
-		console.log(end.connect);
-        chrome.runtime.sendMessage({src: "back1", "sample": end.sample, "connect": end.connect});
-    }
-	if (request.src == "filter") {
-		exclude.push(request.option);
-			//console.log(request.kissyMods);
-		var end=toJson(kissymods,exclude);
-		console.log(end.sample);
-		console.log(end.connect);
-        chrome.runtime.sendMessage({src: "back2", "sample": end.sample, "connect": end.connect});
+		kissymods = JSON.parse(request.kissyMods);
     }
 	
+	if(request.src=="kissyMap1"){
+	//	console.log(request.kissyMods);
+		kissymods = request.kissyMods;
+	}
+	
+    if (request.src == "ready") {
+		if(kissymods){
+			var end=toJson(kissymods,exclude);
+		//	console.log(end.sample);
+		//	console.log(end.connect);
+		//    chrome.runtime.sendMessage({src: "back1", "sample": end.sample, "connect": end.connect});
+			sendResponse({src: "ready", sample: end.sample, connect: end.connect});
+		}else{
+			sendResponse({src: "noKISSY"});
+		}
+    }
+	if (request.src == "filter") {
+		if(kissymods){
+			exclude.push(request.option);
+			var end=toJson(kissymods,exclude);
+		//	console.log(end.sample);
+		//	console.log(end.connect);
+			sendResponse({src: "filter", "sample": end.sample, "connect": end.connect});
+		}else{
+			sendResponse({src: "noKISSY"});
+		}
+    }
 });
-function testMods(str,exclude){
+
+function testMods(str,exclude) {
 	for(var i=0;i<exclude.length;i++) {
 		if(str.indexOf(exclude[i]+"/")==0){
 			return false;
@@ -35,7 +50,9 @@ function testMods(str,exclude){
 	}
 	return true;
 }
-function toJson(kissymods,exculde){
+
+
+function toJson(kissymods,exculde) {
 	var connect=[]
 		,sample=[]
 		,count=0
@@ -43,7 +60,7 @@ function toJson(kissymods,exculde){
 	for (var name in kissymods) {
 				
 				if (kissymods[name].requires[0]&& testMods(name,exclude)) {
-					console.log(testMods(name,exclude));
+				//	console.log(testMods(name,exclude));
 					var strsample='{"name": "'+name+'", '+'"size": '+Math.round(20*Math.random()+20)+'}';
 					sample[count1]=JSON.parse(strsample);
 					count1++;
