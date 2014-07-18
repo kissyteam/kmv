@@ -1,12 +1,12 @@
 .fundiv{
-    height:30px;
+    height:100px;
 	line-height:30px;
 	width:100%;
 	text-align:center;
-	/*border:1px solid #ccc;*/
+/*	position:absolute;*/
 }
 .fundiv select,.fundiv button {
-	height:100%;
+	height:30px;
 	border:1px solid #ccc;
 	border-radius:5px;
 	font-family:Arial;
@@ -30,4 +30,13 @@
 	font-weight:bold;
 	font-family:Arial;
 	color:red;
+}
+
+.choosedMod{
+	display:inline-block;
+	background:#333;
+	color:#fff;
+	font-family:Arial;
+	font-size:12px;
+	margin-left:5px;
 }

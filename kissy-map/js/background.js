@@ -28,8 +28,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 		}
     }
 	if (request.src == "filter") {
+	//	console.log(request.option);
+		for(var f=0;f<request.option.length;f++){
+			exclude.push(request.option[f]);
+		}
 		if(kissymods){
-			exclude.push(request.option);
+		//	exclude.push(request.option);
 			var end=toJson(kissymods,exclude);
 		//	console.log(end.sample);
 		//	console.log(end.connect);

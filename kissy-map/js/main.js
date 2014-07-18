@@ -12,7 +12,14 @@
 //        {"source": "alpha", "target": "beta"},
 //    ]
 
-		
+//	chrome.runtime.sendMessage({src: "getKISSY"});
+	
+//	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {  
+//		chrome.tabs.sendMessage(tabs[0].id, {src: "getKISSY"}, function(response) {  
+//			console.log(response.farewell);  
+//		});  
+//	});  
+	
     chrome.runtime.sendMessage({src: "ready"}, function(request) {
 	
 		if (request.src == "ready") {
@@ -49,13 +56,29 @@
     });
 	
 //	var oForm=document.getElementById("filterMods");
+	var oFilter=document.getElementById("fundiv");
 	var oSel=document.getElementById("sMods");
 	var oBt=document.getElementsByTagName("button")[0];
-	oBt.addEventListener("click",function(event){
+	var oChoose=document.getElementById("choosemod");
+	var choosemods=[];
+	oChoose.addEventListener("click",function(event){
+	//	choosemods=[];
 		var options=oSel.options;
 		var modIndex=oSel.selectedIndex;
 		
-		chrome.runtime.sendMessage({src: "filter", option: options[modIndex].value},function(request){
+		choosemods.push(options[modIndex].value);
+		oSel.removeChild(options[modIndex]);
+		
+		var p=document.createElement("p");
+		p.innerHTML=options[modIndex].value;
+		p.className="choosedMod";
+		
+		oFilter.appendChild(p);
+	});
+	
+	oBt.addEventListener("click",function(event){
+	//	alert(choosemods);
+		chrome.runtime.sendMessage({src: "filter", option: choosemods},function(request){
 			if(request.src=="filter"){
 			
 				while(oSel.firstChild){

@@ -14,7 +14,16 @@
             var script = document.createElement("script");
             script.innerHTML = script_string;
             document.getElementsByTagName("head")[0].appendChild(script);
-
+		//	chrome.runtime.onMessage.addListener(function(request,sender,response){	
+		//		if(request.src=="getKISSY"){
+				//	console.log(request.src);
+				//	window.postMessage("getKISSY","*");
+				//	loadAgain();
+		//		}
+		//	});
+			
+			window.postMessage("getKISSY","*");
+			
             window.addEventListener("message", function(e) {
                 if (e.data.src == "kissyMap") {
                     chrome.runtime.sendMessage({src: "kissyMap", kissyMods: e.data.kissyMods});
@@ -28,26 +37,32 @@
         },
 
         interceptor: function() {
-            setTimeout(function() {
-                var mods = window.KISSY && window.KISSY.Env.mods,
-                    res = {};
-				if(mods){
-					for (var mod in mods) {
-						res[mod] = { requires: mods[mod].requires || [] };
+            window.addEventListener("message",function(e) {
+				if(e.data=="getKISSY"){
+					var mods = window.KISSY && window.KISSY.Env.mods,
+						res = {};
+					if(mods){
+						for (var mod in mods) {
+							res[mod] = { requires: mods[mod].requires || [] };
+						}
+						window.postMessage({
+							src: "kissyMap",
+							kissyMods: JSON.stringify(res)
+						}, "*");
+					}else{
+					//	console.log(mods);
+						window.postMessage({
+							src: "kissyMap1",
+							kissyMods: mods
+						}, "*");
 					}
-					window.postMessage({
-						src: "kissyMap",
-						kissyMods: JSON.stringify(res)
-					}, "*");
-				}else{
-				//	console.log(mods);
-					window.postMessage({
-						src: "kissyMap1",
-						kissyMods: mods
-					}, "*");
 				}
-            }, 2000);
+            },false);
         }
     };
     contentScript.init();
 })();
+
+function loadAgain(){
+	window.location.reload();
+}
