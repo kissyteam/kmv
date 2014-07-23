@@ -1,6 +1,7 @@
 /**
  * popup页面绘制kissyMap
- * 
+ * @ author: zhangdi.zd
+ * @ date: 2014-07-22
  */
 (function() {
 
@@ -11,101 +12,75 @@
 //    var connections = [
 //        {"source": "alpha", "target": "beta"},
 //    ]
+	var oFilter = document.getElementById("ofilter");
+	var oSel = document.getElementById("sMods");
+	var filter = document.getElementById("filter");
+	var oChoose = document.getElementById("choosemod");
+	var choosemods = [];
+	var showFilter = document.getElementById("showFilter");
+	var oSelected=document.getElementById("oSelected");
+	var count=0;
 
-//	chrome.runtime.sendMessage({src: "getKISSY"});
-	
-//	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {  
-//		chrome.tabs.sendMessage(tabs[0].id, {src: "getKISSY"}, function(response) {  
-//			console.log(response.farewell);  
-//		});  
-//	});  
-	
+	setInterval(function(){
+		if(oSelected.firstChild){
+			oSelected.style.display="block";
+		}
+	},500);	
+
+	showFilter.addEventListener("click",function(event){
+		count++;
+		if(count%2==0){
+			moveto(oFilter,-200);
+			showFilter.innerHTML="ShowFilter";
+		}else{
+			moveto(oFilter,0);
+			showFilter.innerHTML="HideFilter";
+			
+		}
+	},false);
+
     chrome.runtime.sendMessage({src: "ready"}, function(request) {
 	
 		if (request.src == "ready") {
-        //   console.log(request.sample);
-		//	console.log(request.connect);
-			while(oSel.firstChild){
-				oSel.removeChild(oSel.firstChild);
-			}
+        
+        	resetOption(oSel,request.sample);
 			
-		//	console.log(request.sample.length);
-			
-			for(var s=0;s<request.sample.length;s++){
-				var op=document.createElement("option");
-				op.value=request.sample[s].name;
-				op.innerHTML=request.sample[s].name;
-				
-				oSel.appendChild(op);
-			}
-			
-			var visualization = d3plus.viz()
-				.container("#viz")
-				.type("network")
-				.data(request.sample)
-				.edges(request.connect)
-				.edges({"arrows": true})
-				.size("size")
-				.id("name")
-				.draw();
+			drawMap(request.sample,request.connect);
         }
 		
 		if(request.src == "noKISSY"){
+			
 			noKissy();
 		}
     });
 	
-//	var oForm=document.getElementById("filterMods");
-	var oFilter=document.getElementById("fundiv");
-	var oSel=document.getElementById("sMods");
-	var oBt=document.getElementsByTagName("button")[0];
-	var oChoose=document.getElementById("choosemod");
-	var choosemods=[];
-	oChoose.addEventListener("click",function(event){
-	//	choosemods=[];
-		var options=oSel.options;
-		var modIndex=oSel.selectedIndex;
+	
+	oChoose.addEventListener("click",function(event) {
+		var options = oSel.options;
+		var modIndex = oSel.selectedIndex;
 		
 		choosemods.push(options[modIndex].value);
+		
+		var p = document.createElement("p");
+		p.innerHTML = options[modIndex].value;
+		p.className = "choosedMod";
+		
+		oSelected.appendChild(p);
+
 		oSel.removeChild(options[modIndex]);
-		
-		var p=document.createElement("p");
-		p.innerHTML=options[modIndex].value;
-		p.className="choosedMod";
-		
-		oFilter.appendChild(p);
 	});
 	
-	oBt.addEventListener("click",function(event){
-	//	alert(choosemods);
+	filter.addEventListener("click",function(event) {
 		chrome.runtime.sendMessage({src: "filter", option: choosemods},function(request){
-			if(request.src=="filter"){
 			
-				while(oSel.firstChild){
-					oSel.removeChild(oSel.firstChild);
-				}
+			if(request.src == "filter"){
+			
+				resetOption(oSel,request.sample);
 				
-				for(var s=0;s<request.sample.length;s++){
-					var op=document.createElement("option");
-					op.value=request.sample[s].name;
-					op.innerHTML=request.sample[s].name;
-					
-					oSel.appendChild(op);
-				}
-				
-				var visualization = d3plus.viz()
-					.container("#viz")
-					.type("network")
-					.data(request.sample)
-					.edges(request.connect)
-					.edges({"arrows": true})
-					.size("size")
-					.id("name")
-					.draw();
-				//	console.log(exclude);
+				drawMap(request.sample,request.connect);
 			}
 			
-			if(request.src=="noKISSY"){
+			if(request.src == "noKISSY"){
 				noKissy();
 			}
 		});
@@ -113,11 +88,49 @@
 	
 })();
 
-function noKissy(){
-	var fp=document.createElement("p");
+function noKissy() {
+	var fp = document.createElement("p");
 	
-	fp.innerHTML="CAN NOT FIND KISSY";
-	fp.className="nokissy";
+	fp.innerHTML = "CAN NOT FIND KISSY";
+	fp.className = "nokissy";
 	
 	document.body.appendChild(fp);
+}
+
+function drawMap(sample,connect) {
+	var visualization = d3plus.viz()
+					.container("#viz")
+					.type("network")
+					.data(sample)
+					.edges(connect)
+					.edges({"arrows": true})
+					.size("size")
+					.id("name")
+					.draw();
+}
+
+function resetOption(oSel,sample) {
+
+	while(oSel.firstChild){
+		oSel.removeChild(oSel.firstChild);
+	}
+				
+	for(var s = 0; s < sample.length; s++){
+		var op = document.createElement("option");
+		op.value = sample[s].name;
+		op.innerHTML = sample[s].name;
+					
+		oSel.appendChild(op);
+	}
+}
+
+function moveto(obj,target){
+	var speed=obj.offsetLeft>target?-10:10;
+	var timer1=setInterval(function(){
+			if(Math.abs(obj.offsetLeft-target)>0.5){
+				obj.style.left=obj.offsetLeft+speed+'px';
+			}else{
+				clearInterval(timer1);
+			}
+		},30);
 }

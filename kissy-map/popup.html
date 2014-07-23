@@ -14,15 +14,16 @@
     <body>
         <script src="js/lib/d3-min.js"></script>
         <script src="js/lib/d3plus.js"></script>
-		<div id="fundiv" class="fundiv">
-			<form id="filterMods">
-				<button type="button">Filter</button>
-				<select id="sMods">
-				</select>
+		<div id="ofilter" class="fundiv">
+            <a id="showFilter">ShowFilter</a>
+			<form>
+				<button type="filter">Filter</button>
+				<select id="sMods"></select>
 				<button id="choosemod" type="button">Choose</button>
-				<input type="checkbox" />
+				<button id="reset" type="button">Reset</button>
 			</form>
 		</div>
+        <div id="oSelected" class="oSelected"></div>
         <div id="viz"></div>
 
         <script src="js/main.js"></script>

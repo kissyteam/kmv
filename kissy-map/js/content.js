@@ -14,13 +14,6 @@
             var script = document.createElement("script");
             script.innerHTML = script_string;
             document.getElementsByTagName("head")[0].appendChild(script);
-		//	chrome.runtime.onMessage.addListener(function(request,sender,response){	
-		//		if(request.src=="getKISSY"){
-				//	console.log(request.src);
-				//	window.postMessage("getKISSY","*");
-				//	loadAgain();
-		//		}
-		//	});
 			
 			window.postMessage("getKISSY","*");
 			
@@ -30,7 +23,7 @@
 					//console.log(typeof e.data.kissyMods);
                 }
 				
-				if(e.data.src=="kissyMap1"){
+				if(e.data.src == "kissyMap1") {
 					chrome.runtime.sendMessage({src: "kissyMap1", kissyMods: e.data.kissyMods});
 				}
             });
@@ -38,10 +31,10 @@
 
         interceptor: function() {
             window.addEventListener("message",function(e) {
-				if(e.data=="getKISSY"){
+				if (e.data =="getKISSY") {
 					var mods = window.KISSY && window.KISSY.Env.mods,
 						res = {};
-					if(mods){
+					if (mods) {
 						for (var mod in mods) {
 							res[mod] = { requires: mods[mod].requires || [] };
 						}
@@ -49,8 +42,7 @@
 							src: "kissyMap",
 							kissyMods: JSON.stringify(res)
 						}, "*");
-					}else{
-					//	console.log(mods);
+					}else {
 						window.postMessage({
 							src: "kissyMap1",
 							kissyMods: mods
@@ -62,7 +54,3 @@
     };
     contentScript.init();
 })();
-
-function loadAgain(){
-	window.location.reload();
-}
