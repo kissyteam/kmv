@@ -16,6 +16,7 @@
 	var oSel = document.getElementById("sMods");
 	var filter = document.getElementById("filter");
 	var oChoose = document.getElementById("choosemod");
+	var oReset=document.getElementById("reset");
 	var choosemods = [];
 	var showFilter = document.getElementById("showFilter");
 	var oSelected=document.getElementById("oSelected");
@@ -24,6 +25,8 @@
 	setInterval(function(){
 		if(oSelected.firstChild){
 			oSelected.style.display="block";
+		}else{
+			oSelected.style.display="none";
 		}
 	},500);	
 
@@ -31,9 +34,11 @@
 		count++;
 		if(count%2==0){
 			moveto(oFilter,-200);
+			moveto(oSelected,-200);
 			showFilter.innerHTML="ShowFilter";
 		}else{
 			moveto(oFilter,0);
+			moveto(oSelected,0);
 			showFilter.innerHTML="HideFilter";
 			
 		}
@@ -71,11 +76,35 @@
 	});
 	
 	filter.addEventListener("click",function(event) {
+	//	console.log(choosemods);
 		chrome.runtime.sendMessage({src: "filter", option: choosemods},function(request){
 			
 			if(request.src == "filter"){
-			
+				console.log(request.sample);
+				console.log(request.connect);
 				resetOption(oSel,request.sample);
+				
+				drawMap(request.sample,request.connect);
+			}
+			
+			if(request.src == "noKISSY"){
+				noKissy();
+			}
+		});
+	},false);
+
+	oReset.addEventListener("click",function(event) {
+	//	console.log(choosemods);
+		chrome.runtime.sendMessage({src: "reset"},function(request){
+			
+			if(request.src == "reset"){
+				console.log(request.sample);
+				console.log(request.connect);
+				resetOption(oSel,request.sample);
+
+				while(oSelected.firstChild){
+					oSelected.removeChild(oSelected.firstChild);
+				}
 				
 				drawMap(request.sample,request.connect);
 			}

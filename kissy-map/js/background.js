@@ -33,21 +33,34 @@ var exclude=["dom","node","loader","anim","features","path","promise","uri","lan
 	    }
 
 		if (request.src == "filter") {
+			console.log(request.option);
 			var excludes=exclude.concat(request.option);
 			if (kissymods) {
+				console.log(excludes);
+				console.log(exclude);
 				var end = toJson(kissymods,excludes);
+				console.log(end);
 				sendResponse({src: "filter", sample: end.sample, connect: end.connect});
+			} else {
+				sendResponse({src: "noKISSY"});
+			}
+	    }
+
+	    if(request.src == "reset"){
+	    	if (kissymods) {
+				var end=toJson(kissymods,exclude);
+				sendResponse({src: "reset", sample: end.sample, connect: end.connect});
 			} else {
 				sendResponse({src: "noKISSY"});
 			}
 	    }
 	});
 
-function testMods(str,exclude) {
-	for(var i = 0; i < exclude.length; i++) {
-		if(str.indexOf(exclude[i] + "/") == 0) {
+function testMods(str,ex) {
+	for(var i = 0; i < ex.length; i++) {
+		if(str.indexOf(ex[i] + "/") == 0) {
 			return false;
-		} else if (exclude.indexOf(str) != -1){
+		} else if (ex.indexOf(str) != -1){
 			return false;
 		}
 	}
@@ -55,19 +68,19 @@ function testMods(str,exclude) {
 }
 
 
-function toJson(kissymods,exculde) {
+function toJson(kissymods,ex) {
 	var connect = []
 		,sample = []
 		,count = 0
 		,count1 = 0;
 	for (var name in kissymods) {
 				
-				if (kissymods[name].requires[0] && testMods(name,exclude)) {
+				if (kissymods[name].requires[0] && testMods(name,ex)) {
 					var strsample = '{"name": "' + name + '", ' + '"size": ' + Math.round(20*Math.random() + 20) + '}';
 					sample[count1] = JSON.parse(strsample);
 					count1++;
 					for(var k = 0; k < kissymods[name].requires.length; k++){
-						if (testMods(kissymods[name].requires[k],exclude)) {
+						if (testMods(kissymods[name].requires[k],ex)) {
 						var strcon = '{"source": "' + name + '", ' + '"target": "' + kissymods[name].requires[k] + '"}';
 						connect[count] = JSON.parse(strcon);
 						count++;
