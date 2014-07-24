@@ -67,16 +67,35 @@ function testMods(str,ex) {
 	return true;
 }
 
+function countRequire(kissymods){
+	var requirecount={};
+	for(var i in kissymods){
+		if(kissymods[i].requires[0]){
+			kissymods[i].requires.forEach(function(data){
+				if(requirecount[data]){
+					requirecount[data]++;
+				}else{
+					requirecount[data]=1;
+				}
+			});
+		}
+	}
+	return requirecount;
+}
 
 function toJson(kissymods,ex) {
 	var connect = []
 		,sample = []
 		,count = 0
 		,count1 = 0;
+	var requirecount=countRequire(kissymods);
+	console.log(requirecount);
 	for (var name in kissymods) {
 				
 				if (kissymods[name].requires[0] && testMods(name,ex)) {
-					var strsample = '{"name": "' + name + '", ' + '"size": ' + Math.round(20*Math.random() + 20) + '}';
+					var size=requirecount[name]?(requirecount[name]+10):20;
+					console.log(requirecount.name+' '+name);
+					var strsample = '{"name": "' + name + '", ' + '"size": ' + size + '}';
 					sample[count1] = JSON.parse(strsample);
 					count1++;
 					for(var k = 0; k < kissymods[name].requires.length; k++){
