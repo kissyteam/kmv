@@ -47,7 +47,7 @@
     chrome.runtime.sendMessage({src: "ready"}, function(request) {
 	
 		if (request.src == "ready") {
-        	alert(request.sample[2].name+':'+request.sample[2].size);
+        	//alert(request.sample[2].name+':'+request.sample[2].size);
         	resetOption(oSel,request.sample);
 			
 			drawMap(request.sample,request.connect);
