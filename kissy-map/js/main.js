@@ -77,6 +77,17 @@
 	
 	filter.addEventListener("click",function(event) {
 	//	console.log(choosemods);
+		if(!choosemods[0]){
+			var options = oSel.options;
+			var modIndex = oSel.selectedIndex;
+			choosemods.push(options[modIndex].value);
+
+			var p = document.createElement("p");
+		p.innerHTML = options[modIndex].value;
+		p.className = "choosedMod";
+		
+		oSelected.appendChild(p);  
+		}
 		chrome.runtime.sendMessage({src: "filter", option: choosemods},function(request){
 			
 			if(request.src == "filter"){
