@@ -1,7 +1,6 @@
 var kissymods;
 
 	chrome.tabs.onActivated.addListener(function(evt){
-		chrome.tabs.reload(evt.tabId);
 		kissymods=null;
 	});
 
@@ -17,6 +16,13 @@ var kissymods;
 		
 		//接收来自popup
 	    if (request.src == "ready") {
+
+	    	chrome.tabs.query({ active: true, highlighted: true }, function (tabs) {
+	    		
+  				chrome.tabs.sendMessage(tabs[0].id, {src: "ready"});
+			});
+	    	
+
 			if (kissymods) {
 				sendResponse({src: "ready", kissyMods: kissymods});
 			} else {

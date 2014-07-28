@@ -16,9 +16,29 @@
             document.getElementsByTagName("head")[0].appendChild(script);
 			
 		//	window.postMessage("getKISSY","*");
-			
-            window.addEventListener("message", function(e) {
+			var kissy;
+			chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
+				
+				if(request.src == "ready"){
+					window.postMessage({src: "ready"}, "*");
+
+					window.addEventListener("message", function(e) {
+					
+		                if (e.data.src == "kissyMap") {
+		   				   chrome.runtime.sendMessage({src: "kissyMap", kissyMods: e.data.kissyMods});
+						}
+						
+						if(e.data.src == "kissyMap1") {
+							chrome.runtime.sendMessage({src: "kissyMap1", kissyMods: e.data.kissyMods});
+						}
+            		});
+				}
+
+			});
+
+           /* window.addEventListener("message", function(e) {
                 if (e.data.src == "kissyMap") {
+                	
                     chrome.runtime.sendMessage({src: "kissyMap", kissyMods: e.data.kissyMods});
 					//console.log(typeof e.data.kissyMods);
                 }
@@ -26,14 +46,12 @@
 				if(e.data.src == "kissyMap1") {
 					chrome.runtime.sendMessage({src: "kissyMap1", kissyMods: e.data.kissyMods});
 				}
-            });
+            });*/
         },
 
         interceptor: function() {
-        	window.addEventListener('load',function(){
-
-        		setTimeout(function(){
-            		var mods = window.KISSY.Env.mods,
+        	/*window.addEventListener('load',function(){
+            		var mods =window.KISSY && window.KISSY.Env.mods,
 						res = {};
 					if (mods) {
 					//	var k=0;
@@ -53,9 +71,33 @@
 							kissyMods: mods
 						}, "*");
 					}
-            	},0);
-        	},false);
+        	},false);*/
             	
+            window.addEventListener("message", function(event){
+            	if(event.data.src == "ready"){
+       				
+            		var mods =window.KISSY && window.KISSY.Env.mods,
+						res = {};
+					if (mods) {
+					//	var k=0;
+						for (var mod in mods) {
+							res[mod] = { requires: mods[mod].requires || [] };
+					//		k++;
+						}
+						
+					//	alert(k);
+						window.postMessage({
+							src: "kissyMap",
+							kissyMods: JSON.stringify(res)
+						}, "*");
+					}else {
+						window.postMessage({
+							src: "kissyMap1",
+							kissyMods: mods
+						}, "*");
+					}
+            	}
+            }, false);
 					
         }
     };

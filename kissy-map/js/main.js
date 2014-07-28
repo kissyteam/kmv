@@ -65,10 +65,13 @@
         	kissymods=request.kissyMods;
 
         	var end=toJson(kissymods, exclude);
+        	console.log(end);
+
         	resetOption(oSel,end.sample);
+        	debugger;
 			drawMap(end.sample,end.connect);
         }
-		
+
 		if(request.src == "noKISSY"){
 			
 			noKissy();
@@ -156,7 +159,7 @@
 function noKissy() {
 	var fp = document.createElement("p");
 	
-	fp.innerHTML = "页面刷新完毕后再点击，或重刷页面.";
+	fp.innerHTML = "请再次点击，如果仍没有图片则此页面没有KISSY模块";
 	fp.className = "nokissy";
 	
 	document.body.appendChild(fp);
@@ -244,7 +247,7 @@ function toJson(kissymods,ex) {
 		c++;
 			//	alert(kissymods[name].requires.length+':'+testMods(name,ex));
 			if (kissymods[name].requires.length > 0 && testMods(name,ex)) {
-					var size=requirecount[name]?(requirecount[name]+15):15;
+					var size=requirecount[name]?(requirecount[name]*2+10):10;
 			//		alert(name+':'+testMods(name,ex)+'*');
 					var strsample = '{"name": "' + name + '", ' + '"size": ' + size + '}';
 					sample[count1] = JSON.parse(strsample);
