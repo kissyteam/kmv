@@ -3,6 +3,7 @@
  * @ author: zhangdi.zd
  * @ date: 2014-07-22
  */
+
 (function() {
 
 //    var sample_data = [
@@ -22,6 +23,16 @@
 	var oSelected = document.getElementById("oSelected");
 	var oBackout = document.getElementById("backout");
 	var count = 0;
+	var kissymods;
+	var exclude=["dom","node","loader","anim","features","path","promise","uri","lang","base","event","io","attribute","button","color","combobox",
+	"component","cookie","date","dd","deprecated","editor","filter-menu","html-parser","import-style","menu","menubutton","meta","navigation-view",
+	"overlay","querystring","reactive","resizable","router","scroll-view","separator","split-button","stylesheet","swf","tabs","toolbar",
+	"tree","ua","url","util","xtemplate","mui"],
+
+	resetmods=["dom","node","loader","anim","features","path","promise","uri","lang","base","event","io","attribute","button","color","combobox",
+	"component","cookie","date","dd","deprecated","editor","filter-menu","html-parser","import-style","menu","menubutton","meta","navigation-view",
+	"overlay","querystring","reactive","resizable","router","scroll-view","separator","split-button","stylesheet","swf","tabs","toolbar",
+	"tree","ua","url","util","xtemplate","mui"];
 
 	//过滤器隐藏开关
 	setInterval(function() {
@@ -51,9 +62,11 @@
 	
 		if (request.src == "ready") {
         	//alert(request.sample[2].name+':'+request.sample[2].size);
-        	resetOption(oSel,request.sample);
-			
-			drawMap(request.sample,request.connect);
+        	kissymods=request.kissyMods;
+
+        	var end=toJson(kissymods, exclude);
+        	resetOption(oSel,end.sample);
+			drawMap(end.sample,end.connect);
         }
 		
 		if(request.src == "noKISSY"){
@@ -111,45 +124,30 @@
 		}
 
 		//发送过滤请求
-		chrome.runtime.sendMessage({src: "filter", option: choosemods},function(request){
+		var filtermod=exclude.concat(choosemods);
+
+        var end=toJson(kissymods, filtermod);
+        resetOption(oSel,end.sample);
 			
-			if(request.src == "filter"){
-			//	console.log(request.sample);
-			//	console.log(request.connect);
-				resetOption(oSel,request.sample);
-				
-				drawMap(request.sample,request.connect);
-			}
-			
-			if(request.src == "noKISSY"){
-				noKissy();
-			}
-		});
+		drawMap(end.sample,end.connect);
+
 	},false);
 
 //	请求重置
 	oReset.addEventListener("click",function(event) {
 	//	console.log(choosemods);
-		chrome.runtime.sendMessage({src: "reset"},function(request){
-			
-			if(request.src == "reset"){
-			//	console.log(request.sample);
-			//	console.log(request.connect);
-				resetOption(oSel,request.sample);
-
+		
 				//清空选择的模块
-				while(oSelected.firstChild){
+			while(oSelected.firstChild){
 					oSelected.removeChild(oSelected.firstChild);
 				}
-				choosemods=[];
-				
-				drawMap(request.sample,request.connect);
-			}
+			choosemods=[];
+
+			var end=toJson(kissymods, resetmods);
+        	resetOption(oSel,end.sample);
 			
-			if(request.src == "noKISSY"){
-				noKissy();
-			}
-		});
+			drawMap(end.sample,end.connect);
+			
 	},false);
 	
 })();
@@ -158,7 +156,7 @@
 function noKissy() {
 	var fp = document.createElement("p");
 	
-	fp.innerHTML = "CAN NOT FIND KISSY, MAYBE YOU SHOULD REFRESH THIS PAGE";
+	fp.innerHTML = "Please wait and Click again? Or refresh your page.";
 	fp.className = "nokissy";
 	
 	document.body.appendChild(fp);
@@ -203,4 +201,65 @@ function moveto(obj,target){
 				clearInterval(timer1);
 			}
 		},30);
+}
+
+//测试模块是否需要过滤
+function testMods(str,ex) {
+	for(var i = 0; i < ex.length; i++) {
+		if(str.indexOf(ex[i] + "/") == 0) {
+			return false;
+		} else if (str.indexOf(ex[i]) == 0){
+			return false;
+		}
+	}
+	return true;
+}
+
+//被依赖次数记录
+function countRequire(kissymods){
+	var requirecount={};
+	for(var i in kissymods){
+		if(kissymods[i].requires[0]){
+			kissymods[i].requires.forEach(function(data){
+				if(requirecount[data]){
+					requirecount[data]++;
+				}else{
+					requirecount[data]=1;
+				}
+			});
+		}
+	}
+	return requirecount;
+}
+
+//格式化
+function toJson(kissymods,ex) {
+	var connect = []
+		,sample = []
+		,count = 0
+		,count1 = 0;
+		var c=0;
+	var requirecount=countRequire(kissymods);
+	for (var name in kissymods) {
+		c++;
+			//	alert(kissymods[name].requires.length+':'+testMods(name,ex));
+			if (kissymods[name].requires.length > 0 && testMods(name,ex)) {
+					var size=requirecount[name]?(requirecount[name]+15):15;
+			//		alert(name+':'+testMods(name,ex)+'*');
+					var strsample = '{"name": "' + name + '", ' + '"size": ' + size + '}';
+					sample[count1] = JSON.parse(strsample);
+					count1++;
+					for(var k = 0; k < kissymods[name].requires.length; k++){
+						if (testMods(kissymods[name].requires[k],ex)) {
+						var strcon = '{"source": "' + name + '", ' + '"target": "' + kissymods[name].requires[k] + '"}';
+						connect[count] = JSON.parse(strcon);
+						count++;
+						}
+					}
+				
+			}
+	}
+	//alert(count+' '+count1+' '+c);
+	var outcome = {"sample": sample, "connect": connect};
+	return outcome;
 }

@@ -15,7 +15,7 @@
             script.innerHTML = script_string;
             document.getElementsByTagName("head")[0].appendChild(script);
 			
-			window.postMessage("getKISSY","*");
+		//	window.postMessage("getKISSY","*");
 			
             window.addEventListener("message", function(e) {
                 if (e.data.src == "kissyMap") {
@@ -30,14 +30,19 @@
         },
 
         interceptor: function() {
-            window.addEventListener("message",function(e) {
-				if (e.data =="getKISSY") {
-					var mods = window.KISSY && window.KISSY.Env.mods,
+        	window.addEventListener('load',function(){
+
+        		setTimeout(function(){
+            		var mods = window.KISSY.Env.mods,
 						res = {};
 					if (mods) {
+					//	var k=0;
 						for (var mod in mods) {
 							res[mod] = { requires: mods[mod].requires || [] };
+					//		k++;
 						}
+						
+					//	alert(k);
 						window.postMessage({
 							src: "kissyMap",
 							kissyMods: JSON.stringify(res)
@@ -48,8 +53,10 @@
 							kissyMods: mods
 						}, "*");
 					}
-				}
-            },false);
+            	},0);
+        	},false);
+            	
+					
         }
     };
     contentScript.init();

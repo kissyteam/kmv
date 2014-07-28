@@ -59,7 +59,8 @@
 	font-size: 50px;
 	font-weight: bold;
 	color: red;
-	padding: 20px;
+	padding-left: 100px;
+	padding-right: 100px;
 }
 
 .choosedMod{
