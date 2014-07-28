@@ -14,7 +14,7 @@ var exclude=["dom","node","loader","anim","features","path","promise","uri","lan
 	});
 
 	chrome.runtime.onMessage.addListener (function (request, sender, sendResponse) {
-
+		//接收来自content script
 	    if (request.src == "kissyMap") {
 			kissymods = JSON.parse(request.kissyMods);
 	    }
@@ -23,6 +23,7 @@ var exclude=["dom","node","loader","anim","features","path","promise","uri","lan
 			kissymods = request.kissyMods;
 		}
 		
+		//接收来自popup
 	    if (request.src == "ready") {
 			if (kissymods) {
 				var end=toJson(kissymods,exclude);
@@ -57,6 +58,7 @@ var exclude=["dom","node","loader","anim","features","path","promise","uri","lan
 	    }
 	});
 
+//测试模块是否需要过滤
 function testMods(str,ex) {
 	for(var i = 0; i < ex.length; i++) {
 		if(str.indexOf(ex[i] + "/") == 0) {
@@ -68,6 +70,7 @@ function testMods(str,ex) {
 	return true;
 }
 
+//被依赖次数记录
 function countRequire(kissymods){
 	var requirecount={};
 	for(var i in kissymods){
@@ -84,6 +87,7 @@ function countRequire(kissymods){
 	return requirecount;
 }
 
+//格式化
 function toJson(kissymods,ex) {
 	var connect = []
 		,sample = []
@@ -112,7 +116,3 @@ function toJson(kissymods,ex) {
 	var outcome = {"sample": sample, "connect": connect};
 	return outcome;
 }
-
-//过滤与json格式化要分开来
-
-//过滤
