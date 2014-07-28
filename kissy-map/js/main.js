@@ -58,11 +58,11 @@
 	}, false);
 
 	//popup页面请求
-    chrome.runtime.sendMessage({src: "ready"}, function(request) {
-	
-		if (request.src == "ready") {
-        	//alert(request.sample[2].name+':'+request.sample[2].size);
-        	kissymods=request.kissyMods;
+    chrome.runtime.sendMessage({src: "ready"});
+
+    chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
+    	if(request.src == "kissy"){
+    		kissymods=request.kissyMods;
 
         	var end=toJson(kissymods, exclude);
         	console.log(end);
@@ -70,12 +70,11 @@
         	resetOption(oSel,end.sample);
         	debugger;
 			drawMap(end.sample,end.connect);
-        }
+    	}
 
-		if(request.src == "noKISSY"){
-			
-			noKissy();
-		}
+    	if(request.src == "nokissy"){
+    		noKissy();
+    	}
     });
 	
 	//选择模块
@@ -159,7 +158,7 @@
 function noKissy() {
 	var fp = document.createElement("p");
 	
-	fp.innerHTML = "请再次点击，如果仍没有图片则此页面没有KISSY模块";
+	fp.innerHTML = "此页面未发现KISSY模块";
 	fp.className = "nokissy";
 	
 	document.body.appendChild(fp);
