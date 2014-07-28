@@ -156,7 +156,7 @@
 function noKissy() {
 	var fp = document.createElement("p");
 	
-	fp.innerHTML = "Please wait and Click again? Or refresh your page.";
+	fp.innerHTML = "页面刷新完毕后再点击，或重刷页面.";
 	fp.className = "nokissy";
 	
 	document.body.appendChild(fp);
@@ -251,9 +251,9 @@ function toJson(kissymods,ex) {
 					count1++;
 					for(var k = 0; k < kissymods[name].requires.length; k++){
 						if (testMods(kissymods[name].requires[k],ex)) {
-						var strcon = '{"source": "' + name + '", ' + '"target": "' + kissymods[name].requires[k] + '"}';
-						connect[count] = JSON.parse(strcon);
-						count++;
+							var strcon = '{"source": "' + name + '", ' + '"target": "' + kissymods[name].requires[k] + '"}';
+							connect[count] = JSON.parse(strcon);
+							count++;
 						}
 					}
 				
