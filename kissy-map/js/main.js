@@ -64,7 +64,7 @@
     	if(request.src == "kissy"){
     		kissymods=request.kissyMods;
 
-        	var end=toJson(kissymods, exclude);
+        	var end=toJson(kissymods, resetmods);
         //	console.log(end);
 
         	resetOption(oSel,end.sample);
@@ -125,9 +125,9 @@
 		}
 
 		//发送过滤请求
-		var filtermod=exclude.concat(choosemods);
-
-        var end=toJson(kissymods, filtermod);
+		exclude=exclude.concat(choosemods);
+		choosemods=[];
+        var end=toJson(kissymods, exclude);
         resetOption(oSel,end.sample);
 			
 		drawMap(end.sample,end.connect);
@@ -142,6 +142,7 @@
 			while(oSelected.firstChild){
 					oSelected.removeChild(oSelected.firstChild);
 				}
+			exclude.length=resetmods.length;
 			choosemods=[];
 
 			var end=toJson(kissymods, resetmods);
