@@ -48,11 +48,11 @@
 		if( count%2 == 0) {
 			moveto(oFilter,-200);
 			moveto(oSelected,-200);
-			showFilter.innerHTML = "ShowFilter";
+			showFilter.innerHTML = "过滤器显示";
 		}else {
 			moveto(oFilter,0);
 			moveto(oSelected,0);
-			showFilter.innerHTML = "HideFilter";
+			showFilter.innerHTML = "过滤器隐藏";
 			
 		}
 	}, false);
@@ -65,10 +65,9 @@
     		kissymods=request.kissyMods;
 
         	var end=toJson(kissymods, exclude);
-        	console.log(end);
+        //	console.log(end);
 
         	resetOption(oSel,end.sample);
-        	debugger;
 			drawMap(end.sample,end.connect);
     	}
 
@@ -152,6 +151,9 @@
 			
 	},false);
 	
+
+	//var g=document.getElementsByClassName("d3plus_color");
+	//console.log(typeof g);
 })();
 
 
