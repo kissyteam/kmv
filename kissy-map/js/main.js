@@ -65,7 +65,8 @@
     		kissymods=request.kissyMods;
 
         	var end=toJson(kissymods, resetmods);
-        //	console.log(end);
+        	console.log(end);
+
 
         	resetOption(oSel,end.sample);
 			drawMap(end.sample,end.connect);
@@ -255,7 +256,7 @@ function toJson(kissymods,ex) {
 					sample[count1] = JSON.parse(strsample);
 					count1++;
 					for(var k = 0; k < kissymods[name].requires.length; k++){
-						if (testMods(kissymods[name].requires[k],ex)) {
+						if (testMods(kissymods[name].requires[k],ex) && kissymods[name].requires[k]) {
 							var strcon = '{"source": "' + name + '", ' + '"target": "' + kissymods[name].requires[k] + '"}';
 							connect[count] = JSON.parse(strcon);
 							count++;
