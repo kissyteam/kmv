@@ -3,7 +3,7 @@
 
     "name": "kissy-map",
     "description": "A chrome extension of kissy module dependency graph",
-    "version": "0.0.1",
+    "version": "0.0.3",
 
     "icons": {
         "128": "icon/icon_128.png",
