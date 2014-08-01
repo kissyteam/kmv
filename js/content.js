@@ -46,8 +46,10 @@
 					if (mods) {
 					//	var k=0;
 						for (var mod in mods) {
-							res[mod] = { requires: mods[mod].requires || [] };
-					//		k++;
+							if(mods[mod].status != 0){
+								res[mod] = { requires: mods[mod].requires || [] };
+						//		k++;
+							}
 						}
 						
 					//	alert(k);

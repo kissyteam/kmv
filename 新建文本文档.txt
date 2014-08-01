@@ -1,2 +1,0 @@
-kissyMap 初试版本已经发布，由于目前需求尚不明显还有许多瑕疵，希望小伙伴们有空都去试一试这个小插件，多提宝贵意见和自己的需求，尽情吐槽（吐槽地址：http://gitlab.alibaba-inc.com/udata/kissy-map/issues/3）， 写下你的意见让kissyMap更好地发展起来。/:065 
-附上插件地址：https://chrome.google.com/webstore/search/kissy?hl=zh-CN&authuser=3
