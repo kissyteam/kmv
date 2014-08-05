@@ -7,66 +7,34 @@
 	font-size: 16px;
 }
 .fundiv{
-    height: 250px;
-	width: 200px;
-	text-align: center;
+    height: 30px;
+	width: 698px;
+	line-height: 30px;
 	position: absolute;
 	z-index: 10;
-	left: -200px;
 	border:1px solid #999;
-	border-radius: 10px;
-	background-color: #000;
+	background-color: #fff;
 }
-.fundiv select,.fundiv button {
-	height: 30px;
+.fundiv input,.fundiv button {
+	height: 25px;
 	border: 1px solid #ccc;
 	border-radius: 5px;
-	margin-top: 30px;
+	display: inline-block;
 }
-.fundiv select {
-	width: 150px;
+.fundiv input {
+	width: 198px;
 }
 .fundiv button {
-	width: 80px;
+	width: 78px;
 	cursor: pointer;
 }
-.fundiv a{
-	width: 100px;
+
+#hide {
+	width: 30px;
 	height: 30px;
-	line-height: 30px;
-	display: inline-block;
 	position: absolute;
-	left: 200px;
-	top: 20px;
-	border:1px solid #999;
-}
-
-.oSelected{
-	height: 250px;
-	width: 200px;
-	text-align: center;
-	position: absolute;
-	top: 255px;
-	z-index: 10;
-	border: 1px solid #999;
-	border-radius: 10px;
-	background-color: #000;
-	display: none;
-	overflow: scroll;
-}
-.nokissy{
-	text-align: center;
-	font-size: 50px;
-	font-weight: bold;
-	color: red;
-	padding-left: 100px;
-	padding-right: 100px;
-}
-
-.choosedMod{
-	display: inline-block;
-	background: #333;
+	right: 0;
+	background: #000;
 	color: #fff;
-	font-size: 12px;
-	margin-left: 5px;
+	border-radius: 15px;
 }

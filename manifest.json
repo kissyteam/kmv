@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
 
-    "name": "kissy-map",
+    "name": "kmv",
     "description": "A chrome extension of kissy module dependency graph",
     "version": "0.0.3",
 

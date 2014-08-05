@@ -15,7 +15,7 @@
             script.innerHTML = script_string;
             document.getElementsByTagName("head")[0].appendChild(script);
 			
-		//	接收来自background的请求
+		//	接收来自background的请求，并向页面请求
 			chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 				
 				if(request.src == "ready"){
@@ -28,7 +28,7 @@
 						}
 						
 						if(e.data.src == "kissyMap1") {
-							chrome.runtime.sendMessage({src: "kissyMap1", kissyMods: e.data.kissyMods});
+							window.alert("No KISSY Modules!");
 						}
             		});
 				}
@@ -59,8 +59,7 @@
 						}, "*");
 					}else {
 						window.postMessage({
-							src: "kissyMap1",
-							kissyMods: mods
+							src: "kissyMap1"
 						}, "*");
 					}
             	}
