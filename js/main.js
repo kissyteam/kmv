@@ -5,21 +5,11 @@
  */
 
 (function() {
-//    var sample_data = [
-//        {"name": "alpha", "size": 10},
-//    ]
-//	  var positions=[
-//		  {"name": "alpha", "x": 10, "y": 12}	
-//	  ]
-//    var connections = [
-//        {"source": "alpha", "target": "beta"},
-//    ]
 
 	var oFilter = document.getElementById("ofilter"),
 		oInput = document.getElementById("choosemods"),
 	 	filter = document.getElementById("filter"),
 		oReset = document.getElementById("reset"),
-		showFilter = document.getElementById("showFilter"),
 		hide = document.getElementById("hide"),
 		choosemods = [],
 		modsinit,
@@ -94,13 +84,11 @@ var filters = {
 		,position
 		,count = 0
 		,count1 = 0;
-		var requirecount = countRequire(kissymods);
-
-		console.log(requirecount);
+		var requirecount = self.countRequire(kissymods);
 
 		for (var name in kissymods) {
 
-			if (kissymods[name].requires && testMods(name,exclude)) {
+			if (kissymods[name].requires && self.testMods(name,exclude)) {
 				var size=requirecount[name]?(requirecount[name]*2+10):10;
 				sample = '{"name": "' + name + '", ' + '"size": ' + size + '}';
 				position = '{"name": "' + name + '", ' + '"x": ' +50 +', '+ '"y": ' +50+ '}';
@@ -108,10 +96,10 @@ var filters = {
 				samples[count1] = JSON.parse(sample);
 				count1++;
 				for(var k = 0; k < kissymods[name].requires.length; k++){
-					if (testMods(kissymods[name].requires[k],exclude) && kissymods[name].requires[k]) {
+					if (self.testMods(kissymods[name].requires[k],exclude) && kissymods[name].requires[k]) {
 
 						if(kissymods[name].requires[k].indexOf('.') == 0){
-							kissymods[name].requires[k] = changename(name, kissymods[name].requires[k]);
+							kissymods[name].requires[k] = self.changename(name, kissymods[name].requires[k]);
 						}
 						connect = '{"source": "' + name + '", ' + '"target": "' + kissymods[name].requires[k] + '"}';
 						connects[count] = JSON.parse(connect);
@@ -157,6 +145,56 @@ var filters = {
 		}
 
 		return {"sample": sample, "connect": connect, "position": position};
+	},
+	testMods: function(str, ex) {
+		for(var i = 0; i < ex.length; i++) {
+			if(str.indexOf(ex[i] + "/") == 0) {
+				return false;
+			} else if (str.indexOf(ex[i]) == 0){
+				return false;
+			}
+		}
+		return true;
+	},
+	countRequire: function(kissymods) {
+		var requirecount = {};
+		for(var i in kissymods) {
+			if(kissymods[i].requires[0]) {
+				kissymods[i].requires.forEach(function(data){
+					if(requirecount[data]) {
+						requirecount[data]++;
+					}else {
+						requirecount[data] = 1;
+					}
+				});
+			}
+		}
+		return requirecount;
+	},
+	changename: function(source, target) {
+		var sources = source.split("/");
+		var targets = target.split("/");
+		var end;
+		var count = 0;
+		
+		for(var t = 0; t < targets.length; t++){
+			if(targets[t].indexOf(".") == 0) {
+				count++;
+			}
+		}
+
+		for(var s = sources.length-count,j = count; j<targets.length; s++,j++){
+			sources[s] = targets[j];
+		}
+
+		for(var i=0;i<sources.length;i++){
+			if(i==0){ end = sources[i]}
+			else{
+				end = end +'/'+ sources[i];
+			}
+		}
+
+		return end;
 	}
 };
 
@@ -184,59 +222,4 @@ function moveTopto(obj, target) {
 				clearInterval(timer1);
 			}
 		},30);
-}
-
-//测试模块是否需要过滤
-function testMods(str, ex) {
-	for(var i = 0; i < ex.length; i++) {
-		if(str.indexOf(ex[i] + "/") == 0) {
-			return false;
-		} else if (str.indexOf(ex[i]) == 0){
-			return false;
-		}
-	}
-	return true;
-}
-
-//被依赖次数记录
-function countRequire(kissymods) {
-	var requirecount = {};
-	for(var i in kissymods) {
-		if(kissymods[i].requires[0]) {
-			kissymods[i].requires.forEach(function(data){
-				if(requirecount[data]) {
-					requirecount[data]++;
-				}else {
-					requirecount[data] = 1;
-				}
-			});
-		}
-	}
-	return requirecount;
-}
-
-function changename(source, target) {
-	var sources = source.split("/");
-	var targets = target.split("/");
-	var end;
-	var count = 0;
-	
-	for(var t = 0; t < targets.length; t++){
-		if(targets[t].indexOf(".") == 0) {
-			count++;
-		}
-	}
-
-	for(var s = sources.length-count,j = count; j<targets.length; s++,j++){
-		sources[s] = targets[j];
-	}
-
-	for(var i=0;i<sources.length;i++){
-		if(i==0){ end = sources[i]}
-		else{
-			end = end +'/'+ sources[i];
-		}
-	}
-
-	return end;
 }
