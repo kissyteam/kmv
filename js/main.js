@@ -109,6 +109,10 @@ var filters = {
 				count1++;
 				for(var k = 0; k < kissymods[name].requires.length; k++){
 					if (testMods(kissymods[name].requires[k],exclude) && kissymods[name].requires[k]) {
+
+						if(kissymods[name].requires[k].indexOf('.') == 0){
+							kissymods[name].requires[k] = changename(name, kissymods[name].requires[k]);
+						}
 						connect = '{"source": "' + name + '", ' + '"target": "' + kissymods[name].requires[k] + '"}';
 						connects[count] = JSON.parse(connect);
 						count++;
@@ -209,4 +213,30 @@ function countRequire(kissymods) {
 		}
 	}
 	return requirecount;
+}
+
+function changename(source, target) {
+	var sources = source.split("/");
+	var targets = target.split("/");
+	var end;
+	var count = 0;
+	
+	for(var t = 0; t < targets.length; t++){
+		if(targets[t].indexOf(".") == 0) {
+			count++;
+		}
+	}
+
+	for(var s = sources.length-count,j = count; j<targets.length; s++,j++){
+		sources[s] = targets[j];
+	}
+
+	for(var i=0;i<sources.length;i++){
+		if(i==0){ end = sources[i]}
+		else{
+			end = end +'/'+ sources[i];
+		}
+	}
+
+	return end;
 }
